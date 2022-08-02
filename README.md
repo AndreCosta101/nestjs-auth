@@ -1,3 +1,8 @@
+<!-- https://youtu.be/3z6Cs_PtYc0 -->
+<!-- NestJS - Autenticação (Sistema de Login) -->
+<!-- https://fabricadesinapse.gitbook.io/sinapse-book/nestjs/autenticacao-sistema-de-login-com-token-jwt#migrar-o-banco -->
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>

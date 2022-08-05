@@ -4,45 +4,43 @@ import * as bcrypt from 'bcrypt';
 import { User } from 'src/user/entities/user.entity';
 import { UserPayload } from './models/UserPayload';
 import { UserToken } from './models/UserToken';
-import { JwtService} from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-    constructor(
-        private readonly userService: UserService,
-        private readonly jwtService: JwtService
-        ) {}
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.findByEmail(email);
 
-    async validateUser(email: string, password: string) {
-        const user = await this.userService.findByEmail(email);
+    if (user) {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
 
-        if(user) {
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-
-            if(isPasswordValid) {
-                return {
-                    ...user,
-                    password: undefined
-                }
-            }
-        }
-
-        throw new Error('Email or password is incorrect')
-    }
-
-
-    async login(user: User): Promise<UserToken> {
-        const payload: UserPayload = {
-            sub: user.id,
-            email: user.email,
-            name: user.name
-        }
-
-        const jwtToken = this.jwtService.sign(payload)
-
+      if (isPasswordValid) {
         return {
-            access_token: jwtToken
-        }
+          ...user,
+          password: undefined,
+        };
+      }
     }
+
+    throw new Error('Email or password is incorrect');
+  }
+
+  async login(user: User): Promise<UserToken> {
+    const payload: UserPayload = {
+      sub: user.id,
+      email: user.email,
+      name: user.name,
+    };
+
+    const jwtToken = this.jwtService.sign(payload);
+
+    return {
+      access_token: jwtToken,
+    };
+  }
 }
